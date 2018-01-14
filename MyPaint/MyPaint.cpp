@@ -523,6 +523,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 			}
 				break;
+			case IDM_NEW: 
+			{
+				shapes.resize(0);
+				redo.resize(0);
+				InvalidateRect(hWnd, 0, TRUE);
+				tempShape = NULL;
+
+			}
+			break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
