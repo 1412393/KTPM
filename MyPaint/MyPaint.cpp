@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "CShape.h"
-
+#include "ShapeFactory.h"
 #define MAX_LOADSTRING 100
 
 // Global Variables:
@@ -39,8 +39,8 @@ int sle_x1, sle_x2, sle_y1, sle_y2;
 
 //Đối tượng đang được chọn bởi anchor
 CShape* tempShape;
-CRectangle selectedShapeRect;
-
+CShape* selectedShapeRect;
+ShapeFactory* shapefactory;
 // loại hình đang vẽ
 int selectedShape = -1;
 // có đang vẽ
@@ -274,9 +274,9 @@ PBITMAPINFO CreateBitmapInfo(HBITMAP hBitmap)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	ShapeFactory* shapefactory;
+
 	CShape *shape;
-	shapefactory = new Factory;
+
     switch (message)
     {
 		HANDLE_MSG(hWnd, WM_CREATE, OnCreate);
@@ -563,7 +563,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					{
 						if (tempShape != NULL)
 							shapes.push_back(tempShape);
-						selectedShapeRect.SetData(shapes[i]->coordinates().left, shapes[i]->coordinates().top, shapes[i]->coordinates().right, shapes[i]->coordinates().bottom, 1, 2);
+						selectedShapeRect->SetData(shapes[i]->coordinates().left, shapes[i]->coordinates().top, shapes[i]->coordinates().right, shapes[i]->coordinates().bottom, 1, 2);
 						//Khởi tạo loại hình tương ứng
 						/*ShapeFactory* shapefactory;
 						CShape *shape;
@@ -610,6 +610,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			else
 				isHoding = false;
 		}
+		else {
+			redo.clear();
+		}
+
+
+
 		//Vẽ vùng chọn trong chức năng Select
 		if (idbutton == IDC_TOOLBAR_SELECT ) {
 			sle_x1 = GET_X_LPARAM(lParam);
@@ -657,42 +663,42 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			switch (anchorType)
 			{
 			case ANCHOR1: {
-				selectedShapeRect.SetData(lastX, lastY, selectedShapeRect.coordinates().right, selectedShapeRect.coordinates().bottom, selectedShapeRect.get_sizeLine(), selectedShapeRect.get_styleLine());
+				selectedShapeRect->SetData(lastX, lastY, selectedShapeRect->coordinates().right, selectedShapeRect->coordinates().bottom, selectedShapeRect->get_sizeLine(), selectedShapeRect->get_styleLine());
 				tempShape->SetData(lastX, lastY, tempShape->coordinates().right, tempShape->coordinates().bottom, tempShape->get_sizeLine(), tempShape->get_styleLine());
 				UpdateClientArea(hWnd);
 				break; }
 			case ANCHOR2: {
-				selectedShapeRect.SetData(selectedShapeRect.coordinates().left, lastY, selectedShapeRect.coordinates().right, selectedShapeRect.coordinates().bottom, selectedShapeRect.get_sizeLine(), selectedShapeRect.get_styleLine());
+				selectedShapeRect->SetData(selectedShapeRect->coordinates().left, lastY, selectedShapeRect->coordinates().right, selectedShapeRect->coordinates().bottom, selectedShapeRect->get_sizeLine(), selectedShapeRect->get_styleLine());
 				tempShape->SetData(tempShape->coordinates().left, lastY, tempShape->coordinates().right, tempShape->coordinates().bottom, tempShape->get_sizeLine(), tempShape->get_styleLine());
 				UpdateClientArea(hWnd);
 				break; }
 			case ANCHOR3: {
-				selectedShapeRect.SetData(selectedShapeRect.coordinates().left, lastY, lastX, selectedShapeRect.coordinates().bottom, selectedShapeRect.get_sizeLine(), selectedShapeRect.get_styleLine());
+				selectedShapeRect->SetData(selectedShapeRect->coordinates().left, lastY, lastX, selectedShapeRect->coordinates().bottom, selectedShapeRect->get_sizeLine(), selectedShapeRect->get_styleLine());
 				tempShape->SetData(tempShape->coordinates().left, lastY, lastX, tempShape->coordinates().bottom, tempShape->get_sizeLine(), tempShape->get_styleLine());
 				UpdateClientArea(hWnd);
 				break; }
 			case ANCHOR4: {
-				selectedShapeRect.SetData(selectedShapeRect.coordinates().left, selectedShapeRect.coordinates().top, lastX, selectedShapeRect.coordinates().bottom, selectedShapeRect.get_sizeLine(), selectedShapeRect.get_styleLine());
-				tempShape->SetData(tempShape->coordinates().left, tempShape->coordinates().top, lastX, tempShape->coordinates().bottom, selectedShapeRect.get_sizeLine(), tempShape->get_styleLine());
+				selectedShapeRect->SetData(selectedShapeRect->coordinates().left, selectedShapeRect->coordinates().top, lastX, selectedShapeRect->coordinates().bottom, selectedShapeRect->get_sizeLine(), selectedShapeRect->get_styleLine());
+				tempShape->SetData(tempShape->coordinates().left, tempShape->coordinates().top, lastX, tempShape->coordinates().bottom, selectedShapeRect->get_sizeLine(), tempShape->get_styleLine());
 				UpdateClientArea(hWnd);
 				break; }
 			case ANCHOR5: {
-				selectedShapeRect.SetData(selectedShapeRect.coordinates().left, selectedShapeRect.coordinates().top, lastX, lastY, selectedShapeRect.get_sizeLine(), selectedShapeRect.get_styleLine());
+				selectedShapeRect->SetData(selectedShapeRect->coordinates().left, selectedShapeRect->coordinates().top, lastX, lastY, selectedShapeRect->get_sizeLine(), selectedShapeRect->get_styleLine());
 				tempShape->SetData(tempShape->coordinates().left, tempShape->coordinates().top, lastX, lastY, tempShape->get_sizeLine(), tempShape->get_styleLine());
 				UpdateClientArea(hWnd);
 				break; }
 			case ANCHOR6: {
-				selectedShapeRect.SetData(selectedShapeRect.coordinates().left, selectedShapeRect.coordinates().top, selectedShapeRect.coordinates().right, lastY, selectedShapeRect.get_sizeLine(), selectedShapeRect.get_styleLine());
+				selectedShapeRect->SetData(selectedShapeRect->coordinates().left, selectedShapeRect->coordinates().top, selectedShapeRect->coordinates().right, lastY, selectedShapeRect->get_sizeLine(), selectedShapeRect->get_styleLine());
 				tempShape->SetData(tempShape->coordinates().left, tempShape->coordinates().top, tempShape->coordinates().right, lastY, tempShape->get_sizeLine(), tempShape->get_styleLine());
 				UpdateClientArea(hWnd);
 				break; }
 			case ANCHOR7: {
-				selectedShapeRect.SetData(lastX, selectedShapeRect.coordinates().top, selectedShapeRect.coordinates().right, lastY, selectedShapeRect.get_sizeLine(), selectedShapeRect.get_styleLine());
+				selectedShapeRect->SetData(lastX, selectedShapeRect->coordinates().top, selectedShapeRect->coordinates().right, lastY, selectedShapeRect->get_sizeLine(), selectedShapeRect->get_styleLine());
 				tempShape->SetData(lastX, tempShape->coordinates().top, tempShape->coordinates().right, lastY, tempShape->get_sizeLine(), tempShape->get_styleLine());
 				UpdateClientArea(hWnd);
 				break; }
 			case ANCHOR8: {
-				selectedShapeRect.SetData(lastX, selectedShapeRect.coordinates().top, selectedShapeRect.coordinates().bottom, selectedShapeRect.coordinates().right, selectedShapeRect.get_sizeLine(), selectedShapeRect.get_styleLine());
+				selectedShapeRect->SetData(lastX, selectedShapeRect->coordinates().top, selectedShapeRect->coordinates().bottom, selectedShapeRect->coordinates().right, selectedShapeRect->get_sizeLine(), selectedShapeRect->get_styleLine());
 				tempShape->SetData(lastX, tempShape->coordinates().top, tempShape->coordinates().bottom, tempShape->coordinates().right, tempShape->get_sizeLine(), tempShape->get_styleLine());
 				UpdateClientArea(hWnd);
 				break; }
@@ -789,8 +795,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (isCursorbutton) {
 			if (tempShape != NULL) {
 				DrawAnchor(memHDC, tempShape->coordinates().left, tempShape->coordinates().top, tempShape->coordinates().right, tempShape->coordinates().bottom);
-				selectedShapeRect.SetColor(RGB(0, 120, 255), -1, -1, -1);
-				selectedShapeRect.Draw(memHDC);
+				selectedShapeRect->SetColor(RGB(0, 120, 255), -1, -1, -1);
+				selectedShapeRect->Draw(memHDC);
 				tempShape->Draw(memHDC);
 			}
 		}
@@ -905,6 +911,10 @@ bool OnCreate(HWND hWnd, LPCREATESTRUCT lpCreateStruct)
 	icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
 	icex.dwICC = ICC_COOL_CLASSES | ICC_BAR_CLASSES | ICC_USEREX_CLASSES | ICC_WIN95_CLASSES;
 	InitCommonControlsEx(&icex);
+
+	//tạo đối tượng singleton ShapeFactory
+	shapefactory = ShapeFactory::getInstance();
+	selectedShapeRect = shapefactory->createShape(F_Rectangle);
 
 	hRebar = CreateWindowEx(WS_EX_TOOLWINDOW, REBARCLASSNAME, NULL, WS_CHILD | WS_VISIBLE ,
 		0, 0, 0, 0, hWnd, NULL, hInst, NULL);
@@ -1043,10 +1053,10 @@ void DrawAnchor(HDC hdc, int x1, int y1, int x2, int y2)
 }
 int ShowAnchorCursor(HWND hWnd, int X, int Y)
 {
-	int left = selectedShapeRect.coordinates().left;
-	int top = selectedShapeRect.coordinates().top;
-	int right = selectedShapeRect.coordinates().right;
-	int bottom = selectedShapeRect.coordinates().bottom;
+	int left = selectedShapeRect->coordinates().left;
+	int top = selectedShapeRect->coordinates().top;
+	int right = selectedShapeRect->coordinates().right;
+	int bottom = selectedShapeRect->coordinates().bottom;
 	if (X >= left - 20 && X <= left + 20 && Y >= top - 20 && Y <= top + 20)
 	{
 		SetCursor(LoadCursor(NULL, IDC_SIZENWSE));

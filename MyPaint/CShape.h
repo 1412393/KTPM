@@ -1,5 +1,6 @@
 #pragma once
 #include "resource.h"
+#include "DrawApi.h"
 #include <Windows.h>
 #include <windowsx.h>
 #include <CommCtrl.h>
@@ -40,11 +41,11 @@ enum CShapeType {
 
 class CShape {
 protected:
+	DrawApi *drawapi;
 	int x1;
 	int y1;
 	int x2;
 	int y2;
-	int colorline;
 	int sizeLine;
 	int stylePen;
 	COLORREF colorLine;
@@ -53,8 +54,10 @@ protected:
 	COLORREF colorBrush;
 public:
 	virtual int typeShape() = 0;
-	virtual void Draw(HDC hdc) = 0;
-
+	//virtual void Draw(HDC hdc) = 0;
+	void Draw(HDC hdc) {
+		drawapi->Draw(hdc, x1, y1, x2, y2, sizeLine, stylePen, colorLine, hacthBrush, Solid, colorBrush);
+	}
 
 	RECT coordinates() {
 		RECT temp;
@@ -102,10 +105,12 @@ public:
 
 
 class CLine : public CShape {
-
-public:
 	
-	void Draw(HDC hdc) {
+public:
+	CLine(DrawApi *dr) {
+		drawapi = dr;
+	}
+	/*void Draw(HDC hdc) {
 		HPEN pen = CreatePen(stylePen, sizeLine, colorLine);
 		HBRUSH hBrush = CreateSolidBrush(colorBrush);
 		if (hacthBrush > -1)
@@ -116,9 +121,11 @@ public:
 		LineTo(hdc, x2, y2);
 		DeleteObject(hBrush);
 		DeleteObject(pen);
-	}
-
-	
+	}*/
+	/*void Draw(HDC hdc) {
+		drawapi->Draw(hdc, x1, y1, x2, y2, sizeLine, stylePen, colorLine, hacthBrush, Solid, colorBrush);
+	}*/
+		
 	 int typeShape() {
 		return 0;
 	}
@@ -128,8 +135,10 @@ public:
 class CRectangle : public CShape {
 
 public:
-	
-	void Draw(HDC hdc) {
+	CRectangle(DrawApi *dr) {
+		drawapi = dr;
+	}
+	/*void Draw(HDC hdc) {
 		HPEN pen = CreatePen(stylePen, sizeLine, colorLine);
 
 		HBRUSH hBrush = CreateSolidBrush(colorBrush);
@@ -148,7 +157,7 @@ public:
 		Rectangle(hdc, x1, y1, x2, y2);
 		DeleteObject(hBrush);
 		DeleteObject(pen);
-	}
+	}*/
 
 	
 
@@ -161,8 +170,10 @@ public:
 class CElip : public CShape {
 
 public:
-	
-	void Draw(HDC hdc) {
+	CElip(DrawApi *dr) {
+		drawapi = dr;
+	}
+	/*void Draw(HDC hdc) {
 		HPEN pen = CreatePen(stylePen, sizeLine, colorLine);
 		HBRUSH hBrush = CreateSolidBrush(colorBrush);
 		if (hacthBrush > -1)
@@ -172,7 +183,7 @@ public:
 		Ellipse(hdc, x1, y1, x2, y2);
 		DeleteObject(hBrush);
 		DeleteObject(pen);
-	}
+	}*/
 
 	
 	int typeShape() {
@@ -185,13 +196,15 @@ class CTriangle : public CShape {
 
 public:
 	
-
+	CTriangle(DrawApi *dr) {
+		drawapi = dr;
+	}
 
 	int typeShape() {
 		return 3;
 	}
 	
-	void Draw(HDC hdc) {
+	/*void Draw(HDC hdc) {
 		HPEN pen = CreatePen(stylePen, sizeLine, colorLine);
 		HBRUSH hBrush = CreateSolidBrush(colorBrush);
 		if (hacthBrush > -1)
@@ -210,19 +223,21 @@ public:
 
 		DeleteObject(hBrush);
 		DeleteObject(pen);
-	}
+	}*/
 };
 
 class CPentagon : public CShape {
 
 public:
 	
-	
+	CPentagon(DrawApi *dr) {
+		drawapi = dr;
+	}
 	int typeShape() {
 		return 4;
 	}
 	
-	void Draw(HDC hdc) {
+	/*void Draw(HDC hdc) {
 		HPEN pen = CreatePen(stylePen, sizeLine, colorLine);
 		HBRUSH hBrush = CreateSolidBrush(colorBrush);
 		if (hacthBrush > -1)
@@ -251,19 +266,21 @@ public:
 
 		DeleteObject(hBrush);
 		DeleteObject(pen);
-	}
+	}*/
 };
 
 class CStar : public CShape {
 
 public:
-	
+	CStar(DrawApi *dr) {
+		drawapi = dr;
+	}
 
 	int typeShape() {
 		return 5;
 	}
 	
-	void Draw(HDC hdc) {
+	/*void Draw(HDC hdc) {
 		HPEN pen = CreatePen(stylePen, sizeLine, colorLine);
 		HBRUSH hBrush = CreateSolidBrush(colorBrush);
 		if (hacthBrush > -1)
@@ -312,19 +329,22 @@ public:
 		
 		DeleteObject(hBrush);
 		DeleteObject(pen);
-	}
+	}*/
 };
 
 class CArrow : public CShape {
 	
 public:
+	CArrow(DrawApi *dr) {
+		drawapi = dr;
+	}
 
 	
 	int typeShape() {
 		return 6;
 	}
 	
-	void Draw(HDC hdc) {
+	/*void Draw(HDC hdc) {
 		HPEN pen = CreatePen(stylePen, sizeLine, colorLine);
 		HBRUSH hBrush = CreateSolidBrush(colorBrush);
 		if (hacthBrush > -1)
@@ -353,49 +373,13 @@ public:
 
 		DeleteObject(hBrush);
 		DeleteObject(pen);
-	}
+	}*/
 };
 
 
-class ShapeFactory {
+/*class ShapeFactory {
 public:
 	virtual CShape *createShape(CShapeType type) = 0;
-};
+};*/
 
-class Factory : public ShapeFactory
-{
-public:
-	CShape *createShape(CShapeType type) {
-	  switch (type) {
-		case F_Line: {
-			return new CLine();
-			break;
-			}
-		case F_Rectangle: {
-			return new CRectangle();
-			break;
-			}
-		case F_Elip: {
-			return new CElip();
-			break;
-			}
-		case F_Triangle: {
-			return new CTriangle();
-			break;
-			}
-		case F_Pentagon: {
-			return new CPentagon();
-			break;
-			}
-		case F_Star: {
-			return new CStar();
-			break;
-			}
-		case F_Arrow: {
-			return new CArrow();
-			break;
-			}
-		default: return NULL;
-		}
-	}
-};
+
