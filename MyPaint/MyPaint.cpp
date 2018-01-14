@@ -28,6 +28,7 @@ COLORREF colorLine;
 COLORREF colorBrush;
 HBITMAP selectBMP;
 
+
 //Vector chứa các đối tượng đã vẽ
 vector<CShape*> shapes;
 vector<CShape*> redo;
@@ -273,6 +274,9 @@ PBITMAPINFO CreateBitmapInfo(HBITMAP hBitmap)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	ShapeFactory* shapefactory;
+	CShape *shape;
+	shapefactory = new Factory;
     switch (message)
     {
 		HANDLE_MSG(hWnd, WM_CREATE, OnCreate);
@@ -345,6 +349,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					int numshapes;
 					f >> numshapes;
 					shapes.resize(0);
+					
 					for (int i = 0; i < numshapes; i++) {
 						CShape* temp = NULL;
 						int typeshape;
@@ -352,24 +357,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						switch (typeshape)
 						{
 						case LINE:
-							temp = new CLine();
+							temp = shapefactory->createShape(F_Line);
 							break;
 						case RECTANGLE:
-							temp = new CRectangle();
+							temp = shapefactory->createShape(F_Rectangle);
 							break;
 						case ELIP:
-							temp = new CElip();
+							temp = shapefactory->createShape(F_Elip);
 							break;
 						case TRIANGLE:
-							temp = new CTriangle();
+							temp = shapefactory->createShape(F_Triangle);
 							break;
 						case PENTAGON:
-							temp = new CPentagon();
+							temp = shapefactory->createShape(F_Pentagon);
 							break;
 						case STAR:
-							temp = new CStar();
+							temp = shapefactory->createShape(F_Star);
 						case ARROW:
-							temp = new CArrow();
+							temp = shapefactory->createShape(F_Arrow);
 							break;
 						}
 						int x1, x2, y1, y2, _size, _style, _solid, _hatchbrush;
@@ -560,15 +565,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							shapes.push_back(tempShape);
 						selectedShapeRect.SetData(shapes[i]->coordinates().left, shapes[i]->coordinates().top, shapes[i]->coordinates().right, shapes[i]->coordinates().bottom, 1, 2);
 						//Khởi tạo loại hình tương ứng
+						/*ShapeFactory* shapefactory;
+						CShape *shape;
+
+						shapefactory = new Factory;*/
 						switch (shapes[i]->typeShape())
 						{
-						case LINE: tempShape = new CLine(); break;
-						case RECTANGLE: tempShape = new CRectangle(); break;
-						case ELIP: tempShape = new CElip(); break;
-						case TRIANGLE: tempShape = new CTriangle(); break;
-						case PENTAGON: tempShape = new CPentagon(); break;
-						case STAR: tempShape = new CStar(); break;
-						case ARROW: tempShape = new CArrow(); break;
+						case LINE: tempShape = shapefactory->createShape(F_Line); break;
+						case RECTANGLE: tempShape = shapefactory->createShape(F_Rectangle); break;
+						case ELIP: tempShape = shapefactory->createShape(F_Elip); break;
+						case TRIANGLE: tempShape = shapefactory->createShape(F_Triangle); break;
+						case PENTAGON: tempShape = shapefactory->createShape(F_Pentagon); break;
+						case STAR: tempShape = shapefactory->createShape(F_Star); break;
+						case ARROW: tempShape = shapefactory->createShape(F_Arrow); break;
 						}
 						//Lưu hình vào biến tạm để có thể thao tác thay đổi kích thước
 						tempShape->SetData(shapes[i]->coordinates().left, shapes[i]->coordinates().top, shapes[i]->coordinates().right, shapes[i]->coordinates().bottom, shapes[i]->get_sizeLine(), shapes[i]->get_styleLine());
@@ -617,15 +626,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				isDrawing = TRUE;
 				firstX = GET_X_LPARAM(lParam);
 				firstY = GET_Y_LPARAM(lParam);
+				/*ShapeFactory* shapefactory;
+				CShape *shape;
+
+				shapefactory = new Factory;*/
 				switch (selectedShape)
 				{
-				case LINE: currentShape = new CLine(); break;
-				case RECTANGLE: currentShape = new CRectangle(); break;
-				case ELIP: currentShape = new CElip(); break;
-				case TRIANGLE: currentShape = new CTriangle(); break;
-				case PENTAGON: currentShape = new CPentagon(); break;
-				case STAR: currentShape = new CStar(); break;
-				case ARROW: currentShape = new CArrow(); break;
+				case LINE: currentShape = shapefactory->createShape(F_Line) ; break;
+				case RECTANGLE: currentShape = shapefactory->createShape(F_Rectangle); break;
+				case ELIP: currentShape = shapefactory->createShape(F_Elip); break;
+				case TRIANGLE: currentShape = shapefactory->createShape(F_Triangle); break;
+				case PENTAGON: currentShape = shapefactory->createShape(F_Pentagon); break;
+				case STAR: currentShape = shapefactory->createShape(F_Star); break;
+				case ARROW: currentShape = shapefactory->createShape(F_Arrow); break;
 				}
 				currentShape->SetData(firstX, firstY, firstX, firstY, sizepen, StylePen);
 				currentShape->SetColor(colorLine, hatchbrush, solid, colorBrush);

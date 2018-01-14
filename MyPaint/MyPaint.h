@@ -34,6 +34,9 @@ using namespace std;
 #define ANCHOR7 17
 #define ANCHOR8 18
 #define MIDANCHOR 19
+enum CShapeType {
+	F_Line, F_Rectangle, F_Elip, F_Triangle, F_Pentagon, F_Star, F_Arrow 
+};
 
 class CShape {
 public:
@@ -46,12 +49,14 @@ public:
 	virtual int get_solid() = 0;
 	virtual int get_hatchbrush() = 0;
 	virtual void Draw(HDC hdc) = 0;
-	virtual CShape* Create() = 0;
 	virtual void SetData(int a, int b, int c, int d, int sizepen, int stylepen) = 0;
 	virtual void SetColor(COLORREF colorline, int hatchbrush, int solid, COLORREF colorbrush) = 0;
+	
 };
 
+
 class CLine : public CShape {
+private:
 	int x1;
 	int y1;
 	int x2;
@@ -103,8 +108,8 @@ public:
 		DeleteObject(pen);
 	}
 
-	CShape* Create() { return new CLine; }
-	int typeShape() {
+	
+	 int typeShape() {
 		return 0;
 	}
 	void SetData(int a, int b, int c, int d, int sizepen, int stylepen) {
@@ -124,6 +129,7 @@ public:
 };
 
 class CRectangle : public CShape {
+private:
 	int x1;
 	int y1;
 	int x2;
@@ -183,7 +189,7 @@ public:
 		DeleteObject(pen);
 	}
 
-	CShape* Create() { return new CRectangle; }
+	
 
 	int typeShape() {
 		return 1;
@@ -205,6 +211,7 @@ public:
 };
 
 class CElip : public CShape {
+private:
 	int x1;
 	int y1;
 	int x2;
@@ -255,7 +262,7 @@ public:
 		DeleteObject(pen);
 	}
 
-	CShape* Create() { return new CElip; }
+	
 	int typeShape() {
 		return 2;
 	}
@@ -276,6 +283,7 @@ public:
 };
 
 class CTriangle : public CShape {
+private:
 	int x1;
 	int y1;
 	int x2;
@@ -288,7 +296,7 @@ class CTriangle : public CShape {
 	int Solid;
 	COLORREF colorBrush;
 public:
-	CShape* Create() { return new CElip; }
+	
 	RECT coordinates() {
 		RECT temp;
 		temp.left = x1;
@@ -356,6 +364,7 @@ public:
 };
 
 class CPentagon : public CShape {
+private:
 	int x1;
 	int y1;
 	int x2;
@@ -368,7 +377,7 @@ class CPentagon : public CShape {
 	int Solid;
 	COLORREF colorBrush;
 public:
-	CShape* Create() { return new CElip; }
+	
 	RECT coordinates() {
 		RECT temp;
 		temp.left = x1;
@@ -446,6 +455,7 @@ public:
 };
 
 class CStar : public CShape {
+private:
 	int x1;
 	int y1;
 	int x2;
@@ -458,7 +468,7 @@ class CStar : public CShape {
 	int Solid;
 	COLORREF colorBrush;
 public:
-	CShape* Create() { return new CElip; }
+	
 	RECT coordinates() {
 		RECT temp;
 		temp.left = x1;
@@ -568,7 +578,7 @@ class CArrow : public CShape {
 	int Solid;
 	COLORREF colorBrush;
 public:
-	CShape* Create() { return new CElip; }
+
 	RECT coordinates() {
 		RECT temp;
 		temp.left = x1;
@@ -643,4 +653,49 @@ public:
 		DeleteObject(hBrush);
 		DeleteObject(pen);
 	}
+};
+
+
+class ShapeFactory {
+public:
+	virtual CShape *createShape(CShapeType type) = 0;
+};
+
+class Factory : public ShapeFactory
+{
+public:
+	CShape *createShape(CShapeType type) {
+		switch (type) {
+		case F_Line: {
+			return new CLine();
+			break;
+		}
+		case F_Rectangle: {
+			return new CRectangle();
+			break;
+		}
+		case F_Elip: {
+			return new CElip();
+			break;
+		}
+		case F_Triangle: {
+			return new CTriangle();
+			break;
+		}
+		case F_Pentagon: {
+			return new CPentagon();
+			break;
+		}
+		case F_Star: {
+			return new CStar();
+			break;
+		}
+		case F_Arrow: {
+			return new CArrow();
+			break;
+		}
+		default: return NULL;
+		}
+	}
+	
 };
