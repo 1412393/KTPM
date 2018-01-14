@@ -27,7 +27,7 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MyPaint.h">
+    <ClInclude Include="CShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

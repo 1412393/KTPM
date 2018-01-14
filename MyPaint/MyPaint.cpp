@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "MyPaint.h"
+#include "CShape.h"
 
 #define MAX_LOADSTRING 100
 

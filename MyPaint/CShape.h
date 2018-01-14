@@ -39,24 +39,7 @@ enum CShapeType {
 };
 
 class CShape {
-public:
-	virtual int typeShape() = 0;
-	virtual RECT coordinates() = 0;
-	virtual COLORREF get_colorLine() = 0;
-	virtual COLORREF get_colorbrush() = 0;
-	virtual int get_sizeLine() = 0;
-	virtual int get_styleLine() = 0;
-	virtual int get_solid() = 0;
-	virtual int get_hatchbrush() = 0;
-	virtual void Draw(HDC hdc) = 0;
-	virtual void SetData(int a, int b, int c, int d, int sizepen, int stylepen) = 0;
-	virtual void SetColor(COLORREF colorline, int hatchbrush, int solid, COLORREF colorbrush) = 0;
-	
-};
-
-
-class CLine : public CShape {
-private:
+protected:
 	int x1;
 	int y1;
 	int x2;
@@ -69,6 +52,10 @@ private:
 	int Solid;
 	COLORREF colorBrush;
 public:
+	virtual int typeShape() = 0;
+	virtual void Draw(HDC hdc) = 0;
+
+
 	RECT coordinates() {
 		RECT temp;
 		temp.left = x1;
@@ -77,24 +64,47 @@ public:
 		temp.bottom = y2;
 		return temp;
 	}
-	COLORREF get_colorLine() {
+ COLORREF get_colorLine() {
 		return colorLine;
 	}
-	COLORREF get_colorbrush() {
+	 COLORREF get_colorbrush() {
 		return colorBrush;
 	}
-	int get_sizeLine() {
+	 int get_sizeLine() {
 		return sizeLine;
 	}
 	int get_styleLine() {
 		return stylePen;
 	}
-	int get_solid() {
+	 int get_solid() {
 		return Solid;
 	}
-	int get_hatchbrush() {
+	 int get_hatchbrush() {
 		return hacthBrush;
 	}
+	
+	 void SetData(int a, int b, int c, int d, int sizepen, int stylepen) {
+		x1 = a;
+		y1 = b;
+		x2 = c;
+		y2 = d;
+		sizeLine = sizepen;
+		stylePen = stylepen;
+	}
+	 void SetColor(COLORREF colorline, int hatchbrush, int solid, COLORREF colorbrush) {
+		colorLine = colorline;
+		colorBrush = colorbrush;
+		hacthBrush = hatchbrush;
+		Solid = solid;
+	}
+	
+};
+
+
+class CLine : public CShape {
+
+public:
+	
 	void Draw(HDC hdc) {
 		HPEN pen = CreatePen(stylePen, sizeLine, colorLine);
 		HBRUSH hBrush = CreateSolidBrush(colorBrush);
@@ -112,62 +122,13 @@ public:
 	 int typeShape() {
 		return 0;
 	}
-	void SetData(int a, int b, int c, int d, int sizepen, int stylepen) {
-		x1 = a;
-		y1 = b;
-		x2 = c;
-		y2 = d;
-		sizeLine = sizepen;
-		stylePen = stylepen;
-	}
-	virtual void SetColor(COLORREF colorline, int hatchbrush, int solid, COLORREF colorbrush) {
-		colorLine = colorline;
-		colorBrush = colorbrush;
-		hacthBrush = hatchbrush;
-		Solid = solid;
-	}
+	
 };
 
 class CRectangle : public CShape {
-private:
-	int x1;
-	int y1;
-	int x2;
-	int y2;
-	int colorline;
-	int sizeLine;
-	int stylePen;
-	COLORREF colorLine;
-	int hacthBrush;
-	int Solid;
-	COLORREF colorBrush;
+
 public:
-	RECT coordinates() {
-		RECT temp;
-		temp.left = x1;
-		temp.top = y1;
-		temp.right = x2;
-		temp.bottom = y2;
-		return temp;
-	}
-	COLORREF get_colorLine() {
-		return colorLine;
-	}
-	COLORREF get_colorbrush() {
-		return colorBrush;
-	}
-	int get_sizeLine() {
-		return sizeLine;
-	}
-	int get_styleLine() {
-		return stylePen;
-	}
-	int get_solid() {
-		return Solid;
-	}
-	int get_hatchbrush() {
-		return hacthBrush;
-	}
+	
 	void Draw(HDC hdc) {
 		HPEN pen = CreatePen(stylePen, sizeLine, colorLine);
 
@@ -194,62 +155,13 @@ public:
 	int typeShape() {
 		return 1;
 	}
-	void SetData(int a, int b, int c, int d, int sizepen, int stylepen) {
-		x1 = a;
-		y1 = b;
-		x2 = c;
-		y2 = d;
-		sizeLine = sizepen;
-		stylePen = stylepen;
-	}
-	virtual void SetColor(COLORREF colorline, int hatchbrush, int solid, COLORREF colorbrush) {
-		colorLine = colorline;
-		colorBrush = colorbrush;
-		hacthBrush = hatchbrush;
-		Solid = solid;
-	}
+	
 };
 
 class CElip : public CShape {
-private:
-	int x1;
-	int y1;
-	int x2;
-	int y2;
-	int colorline;
-	int sizeLine;
-	int stylePen;
-	COLORREF colorLine;
-	int hacthBrush;
-	int Solid;
-	COLORREF colorBrush;
+
 public:
-	RECT coordinates() {
-		RECT temp;
-		temp.left = x1;
-		temp.top = y1;
-		temp.right = x2;
-		temp.bottom = y2;
-		return temp;
-	}
-	COLORREF get_colorLine() {
-		return colorLine;
-	}
-	COLORREF get_colorbrush() {
-		return colorBrush;
-	}
-	int get_sizeLine() {
-		return sizeLine;
-	}
-	int get_styleLine() {
-		return stylePen;
-	}
-	int get_solid() {
-		return Solid;
-	}
-	int get_hatchbrush() {
-		return hacthBrush;
-	}
+	
 	void Draw(HDC hdc) {
 		HPEN pen = CreatePen(stylePen, sizeLine, colorLine);
 		HBRUSH hBrush = CreateSolidBrush(colorBrush);
@@ -266,81 +178,19 @@ public:
 	int typeShape() {
 		return 2;
 	}
-	void SetData(int a, int b, int c, int d, int sizepen, int stylepen) {
-		x1 = a;
-		y1 = b;
-		x2 = c;
-		y2 = d;
-		sizeLine = sizepen;
-		stylePen = stylepen;
-	}
-	virtual void SetColor(COLORREF colorline, int hatchbrush, int solid, COLORREF colorbrush) {
-		colorLine = colorline;
-		colorBrush = colorbrush;
-		hacthBrush = hatchbrush;
-		Solid = solid;
-	}
+	
 };
 
 class CTriangle : public CShape {
-private:
-	int x1;
-	int y1;
-	int x2;
-	int y2;
-	int colorline;
-	int sizeLine;
-	int stylePen;
-	COLORREF colorLine;
-	int hacthBrush;
-	int Solid;
-	COLORREF colorBrush;
+
 public:
 	
-	RECT coordinates() {
-		RECT temp;
-		temp.left = x1;
-		temp.top = y1;
-		temp.right = x2;
-		temp.bottom = y2;
-		return temp;
-	}
-	COLORREF get_colorLine() {
-		return colorLine;
-	}
-	COLORREF get_colorbrush() {
-		return colorBrush;
-	}
-	int get_sizeLine() {
-		return sizeLine;
-	}
-	int get_styleLine() {
-		return stylePen;
-	}
-	int get_solid() {
-		return Solid;
-	}
-	int get_hatchbrush() {
-		return hacthBrush;
-	}
+
 
 	int typeShape() {
 		return 3;
 	}
-	void SetData(int a, int b, int c, int d, int sizepen, int stylepen) {
-		x1 = a;
-		y1 = b;
-		x2 = c;
-		y2 = d;
-		sizeLine = sizepen;
-		stylePen = stylepen;
-	}
-	virtual void SetColor(COLORREF colorline, int hatchbrush, int solid, COLORREF colorbrush) {
-		colorLine = colorline;
-		colorBrush = colorbrush;
-		hacthBrush = hatchbrush;
-		Solid = solid;
-	}
+	
 	void Draw(HDC hdc) {
 		HPEN pen = CreatePen(stylePen, sizeLine, colorLine);
 		HBRUSH hBrush = CreateSolidBrush(colorBrush);
@@ -364,64 +214,14 @@ public:
 };
 
 class CPentagon : public CShape {
-private:
-	int x1;
-	int y1;
-	int x2;
-	int y2;
-	int colorline;
-	int sizeLine;
-	int stylePen;
-	COLORREF colorLine;
-	int hacthBrush;
-	int Solid;
-	COLORREF colorBrush;
+
 public:
 	
-	RECT coordinates() {
-		RECT temp;
-		temp.left = x1;
-		temp.top = y1;
-		temp.right = x2;
-		temp.bottom = y2;
-		return temp;
-	}
-	COLORREF get_colorLine() {
-		return colorLine;
-	}
-	COLORREF get_colorbrush() {
-		return colorBrush;
-	}
-	int get_sizeLine() {
-		return sizeLine;
-	}
-	int get_styleLine() {
-		return stylePen;
-	}
-	int get_solid() {
-		return Solid;
-	}
-	int get_hatchbrush() {
-		return hacthBrush;
-	}
-
+	
 	int typeShape() {
 		return 4;
 	}
-	void SetData(int a, int b, int c, int d, int sizepen, int stylepen) {
-		x1 = a;
-		y1 = b;
-		x2 = c;
-		y2 = d;
-		sizeLine = sizepen;
-		stylePen = stylepen;
-	}
-	virtual void SetColor(COLORREF colorline, int hatchbrush, int solid, COLORREF colorbrush) {
-		colorLine = colorline;
-		colorBrush = colorbrush;
-		hacthBrush = hatchbrush;
-		Solid = solid;
-	}
+	
 	void Draw(HDC hdc) {
 		HPEN pen = CreatePen(stylePen, sizeLine, colorLine);
 		HBRUSH hBrush = CreateSolidBrush(colorBrush);
@@ -455,64 +255,14 @@ public:
 };
 
 class CStar : public CShape {
-private:
-	int x1;
-	int y1;
-	int x2;
-	int y2;
-	int colorline;
-	int sizeLine;
-	int stylePen;
-	COLORREF colorLine;
-	int hacthBrush;
-	int Solid;
-	COLORREF colorBrush;
+
 public:
 	
-	RECT coordinates() {
-		RECT temp;
-		temp.left = x1;
-		temp.top = y1;
-		temp.right = x2;
-		temp.bottom = y2;
-		return temp;
-	}
-	COLORREF get_colorLine() {
-		return colorLine;
-	}
-	COLORREF get_colorbrush() {
-		return colorBrush;
-	}
-	int get_sizeLine() {
-		return sizeLine;
-	}
-	int get_styleLine() {
-		return stylePen;
-	}
-	int get_solid() {
-		return Solid;
-	}
-	int get_hatchbrush() {
-		return hacthBrush;
-	}
 
 	int typeShape() {
 		return 5;
 	}
-	void SetData(int a, int b, int c, int d, int sizepen, int stylepen) {
-		x1 = a;
-		y1 = b;
-		x2 = c;
-		y2 = d;
-		sizeLine = sizepen;
-		stylePen = stylepen;
-	}
-	virtual void SetColor(COLORREF colorline, int hatchbrush, int solid, COLORREF colorbrush) {
-		colorLine = colorline;
-		colorBrush = colorbrush;
-		hacthBrush = hatchbrush;
-		Solid = solid;
-	}
+	
 	void Draw(HDC hdc) {
 		HPEN pen = CreatePen(stylePen, sizeLine, colorLine);
 		HBRUSH hBrush = CreateSolidBrush(colorBrush);
@@ -566,63 +316,14 @@ public:
 };
 
 class CArrow : public CShape {
-	int x1;
-	int y1;
-	int x2;
-	int y2;
-	int colorline;
-	int sizeLine;
-	int stylePen;
-	COLORREF colorLine;
-	int hacthBrush;
-	int Solid;
-	COLORREF colorBrush;
+	
 public:
 
-	RECT coordinates() {
-		RECT temp;
-		temp.left = x1;
-		temp.top = y1;
-		temp.right = x2;
-		temp.bottom = y2;
-		return temp;
-	}
-	COLORREF get_colorLine() {
-		return colorLine;
-	}
-	COLORREF get_colorbrush() {
-		return colorBrush;
-	}
-	int get_sizeLine() {
-		return sizeLine;
-	}
-	int get_styleLine() {
-		return stylePen;
-	}
-	int get_solid() {
-		return Solid;
-	}
-	int get_hatchbrush() {
-		return hacthBrush;
-	}
-
+	
 	int typeShape() {
 		return 6;
 	}
-	void SetData(int a, int b, int c, int d, int sizepen, int stylepen) {
-		x1 = a;
-		y1 = b;
-		x2 = c;
-		y2 = d;
-		sizeLine = sizepen;
-		stylePen = stylepen;
-	}
-	virtual void SetColor(COLORREF colorline, int hatchbrush, int solid, COLORREF colorbrush) {
-		colorLine = colorline;
-		colorBrush = colorbrush;
-		hacthBrush = hatchbrush;
-		Solid = solid;
-	}
+	
 	void Draw(HDC hdc) {
 		HPEN pen = CreatePen(stylePen, sizeLine, colorLine);
 		HBRUSH hBrush = CreateSolidBrush(colorBrush);
@@ -665,37 +366,36 @@ class Factory : public ShapeFactory
 {
 public:
 	CShape *createShape(CShapeType type) {
-		switch (type) {
+	  switch (type) {
 		case F_Line: {
 			return new CLine();
 			break;
-		}
+			}
 		case F_Rectangle: {
 			return new CRectangle();
 			break;
-		}
+			}
 		case F_Elip: {
 			return new CElip();
 			break;
-		}
+			}
 		case F_Triangle: {
 			return new CTriangle();
 			break;
-		}
+			}
 		case F_Pentagon: {
 			return new CPentagon();
 			break;
-		}
+			}
 		case F_Star: {
 			return new CStar();
 			break;
-		}
+			}
 		case F_Arrow: {
 			return new CArrow();
 			break;
-		}
+			}
 		default: return NULL;
 		}
 	}
-	
 };
